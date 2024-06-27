@@ -20,13 +20,15 @@ jobs:
           restore-keys: ${{ runner.os }}-maven
       - name: build with Maven
         run: mvn clean package
-      - name: list target directory
-        run: ls -la target
-      - name: default deploy
-        uses: appleboy/lambda-action@v0.2.0
-        with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          function_name: segundaFuncao
-          zip_file: target/lambda-java-1.0-SNAPSHOT.jar
+      - name: install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+      - name: configure AWS CLI
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
+      - name: deploy to lambda
+        run: |
+          aws lambda update-function-code --function-name segundaFuncao --zip-file fileb://target/lambda-java-1.0-SNAPSHOT.jar
