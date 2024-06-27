@@ -27,4 +27,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: segundaFuncao
-          zip_file: target/lambda-example-1.0-SNAPSHOT.jar
+          zip_file: target/*.jar
