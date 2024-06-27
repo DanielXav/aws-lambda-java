@@ -20,6 +20,8 @@ jobs:
           restore-keys: ${{ runner.os }}-maven
       - name: build with Maven
         run: mvn clean package
+      - name: list target directory
+        run: ls -la target
       - name: default deploy
         uses: appleboy/lambda-action@v0.2.0
         with:
