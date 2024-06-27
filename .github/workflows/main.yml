@@ -7,9 +7,19 @@ jobs:
     steps:
       - name: checkout source code
         uses: actions/checkout@v3
-      - name: generate zip
-        run: |
-          zip deployment.zip *.java
+      - name: set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+      - name: build with Maven
+        run: mvn clean package
       - name: default deploy
         uses: appleboy/lambda-action@v0.2.0
         with:
@@ -17,4 +27,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: segundaFuncao
-          zip_file: example/deployment.zip
+          zip_file: target/lambda-example-1.0-SNAPSHOT.jar
